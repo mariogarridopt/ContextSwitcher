@@ -5,7 +5,7 @@ An [Electron](https://www.electronjs.org/) app that keep track of the tasks you 
 
 Click on the item or just hit Enter to add new tasks. Click to make the timer active. Right click to remove it. Simple!
 
-**The numbers represent the minutes spent on that thask:**
+**The numbers represent the minutes spent on that task:**
 
 ![example of context switcher](images/example.png)
 
