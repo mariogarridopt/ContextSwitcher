@@ -1,0 +1,145 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/roboto/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/roboto/Roboto-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/roboto/Roboto-Light.ttf') format('truetype');
+    font-weight: lighter;
+    font-style: normal;
+}
+
+body {
+    padding: 0px;
+}
+
+body.dark-mode {
+    background-color: #2e3440;
+    color: #eceff4
+}
+
+body.light-mode {
+    background-color: #eceff4;
+    color: #2e3440;
+}
+
+.wrapper {
+
+}
+
+#list .item {
+    float: left;
+    width: 140px;
+    
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+
+    text-align: center;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+}
+
+.dark-mode #list .item {
+    background-color: #3b4252;
+}
+
+.dark-mode #list .item:hover {
+    background-color: #4c566a;
+}
+
+.dark-mode .item.active {
+    box-shadow: 0px 0px 2px 2px rgba(216, 222, 233, 0.5);
+}
+
+#list .item.active .timer {
+    animation: animate 1.5s linear infinite;
+ }
+
+.dark-mode #list .ghost {
+    background-color: #d8dee9;
+    color: #2e3440;
+}
+
+.dark-mode #list .ghost:hover {
+    background-color: #4c566a;
+    color: #d8dee9;
+}
+
+#list .item .title {
+    font-family: 'Roboto';
+    font-size: 16px;
+    height: 40px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    box-sizing: border-box;
+}
+
+#list .item .timer {
+    font-family: 'Roboto';
+    font-weight: lighter;
+    font-size: 30px;
+}
+
+@keyframes animate{
+    0%{
+        opacity: 0;
+    }
+    50%{
+        opacity: 0.7;
+    }
+    100%{
+        opacity: 0;
+    }
+}
+
+#dialog-new-item {
+    position: fixed;
+    width: 250px;
+    height: 110px;
+    left: calc(50vw - 125px);
+    top: calc(50vh - 55px);
+
+    padding: 5px;
+
+    background-color: #eceff4;
+    color: #2e3440;
+    border-radius: 4px;
+
+    font-family: 'Roboto';
+    font-size: 16px;
+
+    box-sizing: border-box;
+}
+
+#dialog-new-item input {
+    margin: 10px 0px 10px 0px;
+    height: 30px;
+    width: 97%;
+    font-size: 20px;
+}
+
+#dialog-new-item button {
+    width: 49%;
+    cursor: pointer;
+}
+
+#dialog-new-item #btn-save {
+    background-color: #3b4252;
+    color: #e5e9f0;
+}

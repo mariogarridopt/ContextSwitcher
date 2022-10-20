@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContextSwitcher</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-mode">
+    <div class="wrapper" id="list">
+        <div class="item ghost" id="new-element-btn">
+            <div class="title">Add New</div>
+            <div class="timer">+</div>
+        </div>
+    </div>
+    <div id="dialog-new-item" style="display: none;">
+        New task title:
+        <br>
+        <input type="text" id="new-item-text">
+        <br>
+        <button class="btn-close" id="btn-close">Cancel</button>
+        <button class="btn-save" id="btn-save">Save</button>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

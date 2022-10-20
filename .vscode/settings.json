@@ -1,0 +1,7 @@
+{
+    "workbench.statusBar.visible": true,
+    "workbench.colorCustomizations": {
+        "statusBar.foreground": "#000",
+        "statusBar.background": "#ede20c"
+      }
+}
