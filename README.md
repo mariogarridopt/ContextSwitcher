@@ -8,7 +8,16 @@ Click on the item or just hit Enter to add new tasks. Click to make the timer ac
 
 ## Try it youself
 This app runs with nodejs and build to any OS using [Electron](https://www.electronjs.org/).
-To build a version of the app to your os run the node command:
+To build a version of the app to your OS you need to download the code and run it with nodejs:
+
+Download the code:
+
+```bash
+git clone git@github.com:mariogarridopt/ContextSwitcher.git
+cd ContextSwitcher
+```
+
+Run the script with nodejs:
 
 ```bash
 npm install && npm run make
