@@ -8,6 +8,7 @@ Click on the item or just hit Enter to add new tasks. Click to make the timer ac
 
 ## Try it youself
 This app runs with nodejs and build to any OS using [Electron](https://www.electronjs.org/).
+
 To build a version of the app to your OS you need to download the code and run it with nodejs:
 
 Download the code:
