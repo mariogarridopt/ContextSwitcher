@@ -5,7 +5,13 @@ function updateTimers () {
         const element = activeItems[index];
         var timer = element.lastElementChild;
 
-        element.lastElementChild.innerHTML = parseInt(element.lastElementChild.innerHTML) + 1;
+        timer.dataset.minutes = parseInt(timer.dataset.minutes) + 1;
+
+        if(timer.dataset.minutes >= 60) {
+            element.lastElementChild.innerHTML = minutesToTime(timer.dataset.minutes);
+        } else {
+            element.lastElementChild.innerHTML = timer.dataset.minutes;
+        }
     }    
 }
 
@@ -44,7 +50,7 @@ function loadEvents() {
         var title = document.getElementById("new-item-text").value;
         document.getElementById("new-item-text").value = "";
         if(title != "") {
-            newItem(title);
+            newItem(title, 0, false);
             writeSessionData();
             loadEvents();
         }
@@ -84,7 +90,7 @@ function newItem(title, timer = 0, active = true) {
         newDiv.classList.add("active");
     }
     newDiv.innerHTML =  '<div class="title">' + title + '</div>' +
-                        '<div class="timer">' + timer + '</div>';
+                        '<div class="timer" data-minutes="' + timer + '">' + timer + '</div>';
 
     randomColorElement(newDiv);
     parentElem.insertBefore(newDiv, document.getElementById("new-element-btn"));
@@ -98,7 +104,7 @@ function writeSessionData() {
     for (let f = 0; f < items.length - 1; f++) {
         newList.push({
             "title": items[f].firstElementChild.innerHTML,
-            "timer": items[f].lastElementChild.innerHTML
+            "timer": items[f].lastElementChild.dataset.minutes
         });
     }
 
@@ -128,6 +134,17 @@ function randomColorElement(elem) {
 	var z = parseFloat(Math.random() * 170 + 50);
 	var thergb = "rgb(" + x.toFixed(2) + "," + y.toFixed(2) + "," + z.toFixed(2) + ")";
 	elem.style.background=thergb;
+}
+
+function padToTwoDigits(number) {
+    return (number < 10 ? '0' : '') + number
+}
+
+function minutesToTime(totalMinutes) {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60; 
+
+    return hours + 'h' + padToTwoDigits(minutes);
 }
 
 readSessionData();
