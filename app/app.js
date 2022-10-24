@@ -18,6 +18,7 @@ function updateTimers () {
 // add click events
 function loadEvents() {
     var items = document.querySelectorAll("#list .item");
+    
     for (let index = 0; index < items.length - 1; index++) {
         items[index].onclick = function() {
             if( items[index].classList.contains("active") ) {
@@ -29,8 +30,18 @@ function loadEvents() {
         };  
 
         items[index].oncontextmenu = function(e) {
+            var obj = {
+                "title": items[index].firstElementChild.innerHTML,
+                "timer": items[index].lastElementChild.dataset.minutes
+            };
+
+            console.log(obj);
+
             items[index].remove();
+
             writeSessionData();
+            db.addToHistory(obj);
+
             e.preventDefault();
         }
     }
@@ -85,6 +96,7 @@ function newItem(title, timer = 0, active = true) {
     var parentElem = document.getElementById("list");
     var newDiv = document.createElement('div');
     newDiv.classList.add("item");
+
     if(active) {
         clearAllActive();
         newDiv.classList.add("active");
@@ -108,13 +120,11 @@ function writeSessionData() {
         });
     }
 
-    sessionStorage.setItem("ContextSwitcherList", JSON.stringify(newList));
+    db.saveObject(newList);
 }
 
 function readSessionData() {
-    var dataString = sessionStorage.getItem("ContextSwitcherList");
-
-    var items = JSON.parse(dataString);
+    var items = db.getObject();
 
     if(items != null) {
         for (let j = 0; j < items.length; j++) {
@@ -128,7 +138,29 @@ function randomFloat(min, max)
   return Math.random() * (max - min) + min;
 }
 
+var colorLoop = 0;
 function randomColorElement(elem) {
+    var colorList = [
+        "#264653",
+        "#2a9d8f",
+        "#e9c46a",
+        "#f4a261",
+        "#e76f51"
+    ];
+
+    color = colorList[colorLoop];
+
+    colorLoop++;
+
+    if(colorLoop >= colorList.length) {
+        colorLoop = 0;
+    }
+    
+    elem.style.backgroundColor = color;
+
+    return colorLoop;
+
+    
     var x = parseFloat(Math.random() * 170 + 50);
 	var y = parseFloat(Math.random() * 170 + 50);
 	var z = parseFloat(Math.random() * 170 + 50);
@@ -149,4 +181,4 @@ function minutesToTime(totalMinutes) {
 
 readSessionData();
 loadEvents();
-setInterval(updateTimers, 30000); 
+setInterval(updateTimers, 60000);
