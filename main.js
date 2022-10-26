@@ -7,12 +7,11 @@ function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 920,
     height: 400,
-    //frame: false,
+    frame: false,
     //titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegrationInWorker: true,
       nodeIntegration: false,
-      devTools: true,
       preload: path.join(__dirname, 'preload.js'),
     },
     icon: 'images/icon.icns'
@@ -39,7 +38,7 @@ app.whenReady().then(() => {
     { role: 'editMenu' },
     { role: 'viewMenu' }
   ]);
-  //Menu.setApplicationMenu(mainMenu);
+  Menu.setApplicationMenu(mainMenu);
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

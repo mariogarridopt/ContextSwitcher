@@ -3,5 +3,8 @@
     "workbench.colorCustomizations": {
         "statusBar.foreground": "#000",
         "statusBar.background": "#ede20c"
-      }
-}
+      },
+    "files.exclude": {
+      "node_modules": true
+    }
+} 
