@@ -1,12 +1,18 @@
-const fs = require('fs')
+const fs = require('fs');
+const path = require('path');
 
 const { contextBridge } = require('electron');
 
-const saveFilePath = 'data/'
+const saveFilePath = getAppDataPath();
+
+if(!fs.existsSync(saveFilePath)){
+    fs.mkdirSync(saveFilePath)
+}
+
 contextBridge.exposeInMainWorld('db', {
     'getObject': () => {
         try {
-            let dataString = fs.readFileSync(saveFilePath + 'active.json', 'utf8');
+            let dataString = fs.readFileSync(saveFilePath + '/active.json', 'utf8');
             return JSON.parse(dataString);
           } catch (err) {
             return [];
@@ -14,13 +20,13 @@ contextBridge.exposeInMainWorld('db', {
     },
     'saveObject': (obj) => {
         try {
-            fs.writeFileSync(saveFilePath + 'active.json', JSON.stringify(obj))
+            fs.writeFileSync(saveFilePath + '/active.json', JSON.stringify(obj))
           } catch (err) {
             console.error(err)
           } 
     },
     'addToHistory': (obj) => {
-        let filename = 'trash.json';
+        let filename = '/trash.json';
         let data = [];
         try {
             let dataString = fs.readFileSync(saveFilePath + filename, 'utf8')
@@ -37,3 +43,20 @@ contextBridge.exposeInMainWorld('db', {
         } 
     }
 });
+
+function getAppDataPath() {
+    switch (process.platform) {
+      case "darwin": {
+        return path.join(process.env.HOME, "Library", "Application Support", "context-switcher-data");
+      }
+      case "win32": {
+        return path.join(process.env.APPDATA, "context-switcher-data");
+      }
+      case "linux": {
+        return path.join(process.env.HOME, ".context-switcher-data");
+      }
+      default: {
+        return 'data';
+      }
+    }
+  }

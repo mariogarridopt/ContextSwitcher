@@ -5,19 +5,34 @@
   "description": "Context Switcher Manager",
   "main": "main.js",
   "scripts": {
-    "start": "electronmon ."
+    "start": "NODE_ENV=development electronmon .",
+    "start:prod": "electronmon .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": [
     "context",
     "switcging"
   ],
   "author": "Mario Garrido",
-  "dependencies": {
+  "electronmon": {
+    "patterns": [
+      "!data/**"
+    ]
+  },
+  "devDependencies": {
     "electron": "^21.1.1",
     "electronmon": "^2.0.2",
-    "toastify-js": "^1.12.0"
+    "electron-builder": "^23.6.0"
   },
-  "electronmon": {
-    "patterns": ["!data/**"]
+  "build": {
+    "appId": "pt.mariogarrido.contextswitcher",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "images/icon.icns"
+    },
+    "win": {
+      "icon": "images/icon.png"
+    }
   }
 }

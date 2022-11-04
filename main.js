@@ -2,12 +2,14 @@
 const {app, BrowserWindow, Menu} = require('electron')
 const path = require('path')
 
+const isDev = process.env.NODE_ENV == "development";
+
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 920,
-    height: 400,
-    frame: false,
+    width: isDev ? 920 : 1080,
+    height: isDev ? 400 : 140,
+    frame: isDev,
     //titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegrationInWorker: true,
@@ -17,13 +19,13 @@ function createWindow () {
     icon: 'images/icon.icns'
   });
 
-  //mainWindow.setWindowButtonVisibility(false);
+  // Open the DevTools.
+  if(isDev) {
+    mainWindow.webContents.openDevTools()
+  }
 
   // and load the index.html of the app.
   mainWindow.loadFile('app/index.html');
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

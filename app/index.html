@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ContextSwitcher</title>
@@ -19,6 +20,19 @@
         <button class="btn-close" id="btn-close">Cancel</button>
         <button class="btn-save" id="btn-save">Save</button>
     </div>
+
+    <div id="dialog-help" style="display: none;">
+        Keys available:
+        <br>
+        <p> ENTER - New item</p>
+        <p> Right Click - Delete item</p>
+        <p> Left Click - None</p>
+        <p> Arrow UP - Previous context</p>
+        <p> Arrow DOWN - Next context</p>
+        <p> ESQ - Exit Dialogs</p>
+    </div>
+
+    <div id="dialog-current-context">1</div>
 
     <script src="events.js" defer></script>
     <script src="app.js" defer></script>
