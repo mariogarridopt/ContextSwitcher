@@ -1,42 +1,38 @@
 {
   "name": "contextswitcher",
+  "productName": "Context Switcher",
   "version": "1.0.0",
   "description": "Context Switcher Manager",
   "main": "main.js",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "start": "NODE_ENV=development electronmon .",
+    "start:prod": "electronmon .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": [
     "context",
     "switcging"
   ],
   "author": "Mario Garrido",
+  "electronmon": {
+    "patterns": [
+      "!data/**"
+    ]
+  },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.67",
-    "@electron-forge/maker-deb": "^6.0.0-beta.67",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.67",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.67",
-    "@electron-forge/maker-zip": "^6.0.0-beta.67",
-    "electron": "^21.1.1"
+    "electron": "^21.1.1",
+    "electronmon": "^2.0.2",
+    "electron-builder": "^23.6.0"
   },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "images/icon.icns"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        }
-      ]
+  "build": {
+    "appId": "pt.mariogarrido.contextswitcher",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "images/icon.icns"
+    },
+    "win": {
+      "icon": "images/icon.png"
     }
   }
 }

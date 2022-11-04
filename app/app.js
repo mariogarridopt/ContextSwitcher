@@ -1,152 +1,115 @@
-// add timer counters
-function updateTimers () {
-    var activeItems = document.querySelectorAll("#list .item.active");
-    for (let index = 0; index < activeItems.length; index++) {
-        const element = activeItems[index];
-        var timer = element.lastElementChild;
+var colorIncId = [0];
+var colorList = [
+    ["#264653", "#2a9d8f", "#e9c46a", "#f4a261", "#e76f51"],
+    ["#355070", "#6d597a", "#b56576", "#e56b6f", "#eaac8b"],
+    ["#5a3b72", "#3f2d76", "#081664", "#04447b", "#065c6c"],
+    ["#007a7a", "#004040", "#000000", "#3d0000", "#7a0000"],
+    ["#191d32", "#282f44", "#453a49", "#6d3b47"]
+];
 
-        timer.dataset.minutes = parseInt(timer.dataset.minutes) + 1;
+var maxContexts = 5;
 
-        if(timer.dataset.minutes >= 60) {
-            element.lastElementChild.innerHTML = minutesToTime(timer.dataset.minutes);
-        } else {
-            element.lastElementChild.innerHTML = timer.dataset.minutes;
-        }
-    }    
-}
-
-// add click events
-function loadEvents() {
-    var items = document.querySelectorAll("#list .item");
-    for (let index = 0; index < items.length - 1; index++) {
-        items[index].onclick = function() {
-            if( items[index].classList.contains("active") ) {
-                items[index].classList.remove("active");
-            } else {
-                clearAllActive();
-                items[index].classList.add("active");
-            }
-        };  
-
-        items[index].oncontextmenu = function(e) {
-            items[index].remove();
-            writeSessionData();
-            e.preventDefault();
-        }
-    }
-
-    document.getElementById("new-element-btn").onclick = function() {
-        document.getElementById("dialog-new-item").style.display = "block";
-        document.getElementById("new-item-text").focus();
-    }
-
-    document.getElementById("btn-close").onclick = function() {
-        document.getElementById("dialog-new-item").style.display = "none";
-        document.getElementById("new-item-text").value = "";
-    }
-
-    document.getElementById("btn-save").onclick = function() {
-        document.getElementById("dialog-new-item").style.display = "none";
-        var title = document.getElementById("new-item-text").value;
-        document.getElementById("new-item-text").value = "";
-        if(title != "") {
-            newItem(title, 0, false);
-            writeSessionData();
-            loadEvents();
-        }
-    }
-
-    document.onkeydown = function(evt) {
-        evt = evt || window.event;
-
-        var isDialogOpen = document.getElementById("dialog-new-item").style.display == "block";
-
-        console.log(evt.key);
-
-        if (evt.key == "Enter" && isDialogOpen) {
-            document.getElementById("btn-save").click();
-        } else if (evt.key == "Enter" && !isDialogOpen) {
-            document.getElementById("new-element-btn").click();
-        } else if (evt.key == "Escape" && isDialogOpen) {
-            document.getElementById("btn-close").click();
-        }
-    };
-}
-
-function clearAllActive() {
-    var items = document.querySelectorAll("#list .item");
-    for (let f = 0; f < items.length; f++) {
-        items[f].classList.remove("active");
-    }
-}
+var itemsList = [];
+var currentContext = 0;
 
 // create new item
-function newItem(title, timer = 0, active = true) {
-    var parentElem = document.getElementById("list");
-    var newDiv = document.createElement('div');
-    newDiv.classList.add("item");
-    if(active) {
-        clearAllActive();
-        newDiv.classList.add("active");
+function addItem(title) {
+    if(typeof itemsList[currentContext] === 'undefined'){
+        itemsList[currentContext] = [];
     }
-    newDiv.innerHTML =  '<div class="title">' + title + '</div>' +
-                        '<div class="timer" data-minutes="' + timer + '">' + timer + '</div>';
+    itemsList[currentContext].push(title);
+}
 
-    randomColorElement(newDiv);
-    parentElem.insertBefore(newDiv, document.getElementById("new-element-btn"));
+function removeItem(context, index) {
+    if (index > -1) {
+        itemsList[context].splice(index, 1);
+    }
+}
+
+function getColor(context, index = 0) {
+    var colorSize = (typeof colorList[context] === 'undefined') ? 0 : colorList[context].length;
+    return colorList[context][index % colorSize];
 }
 
 //storage and data pressistance
-function writeSessionData() {
-    var items = document.querySelectorAll("#list .item");
-    var newList = [];
-
-    for (let f = 0; f < items.length - 1; f++) {
-        newList.push({
-            "title": items[f].firstElementChild.innerHTML,
-            "timer": items[f].lastElementChild.dataset.minutes
-        });
-    }
-
-    sessionStorage.setItem("ContextSwitcherList", JSON.stringify(newList));
+function saveStatus() {
+    db.saveObject(itemsList);
 }
 
-function readSessionData() {
-    var dataString = sessionStorage.getItem("ContextSwitcherList");
+function saveDeleted(item) {
+    db.addToHistory(item);
+}
 
-    var items = JSON.parse(dataString);
+function loadStatus() {
+    itemsList = db.getObject();
 
-    if(items != null) {
-        for (let j = 0; j < items.length; j++) {
-            newItem(items[j].title, items[j].timer, false);
+    var diff = maxContexts - itemsList.length;
+
+    if(diff > 0) {
+        for (let h = 0; h < diff; h++) {
+            itemsList.push([]);
         }
     }
+    renderView();
 }
 
-function randomFloat(min, max)
-{
-  return Math.random() * (max - min) + min;
+function renderView() {
+    var parentElem = document.getElementById("list");
+
+    parentElem.innerHTML = ""; // clear view
+
+    if(typeof itemsList[currentContext] !== 'undefined'){
+        for (let j = 0; j < itemsList[currentContext].length; j++) {
+            var newDiv = document.createElement('div');
+            newDiv.classList.add("item");
+            newDiv.id = "item-id-" + j;
+            newDiv.innerHTML =  '<div class="title">' + itemsList[currentContext][j] + '</div>';
+            newDiv.style.backgroundColor = getColor(currentContext, j);
+            newDiv.dataset.context = currentContext;
+            newDiv.dataset.index = j;
+    
+            parentElem.appendChild(newDiv);
+        }
+
+        parentElem.innerHTML += '<div class="item ghost" id="new-element-btn" onClick="newItemBtn()">' +
+            '<div class="title">Press ENTER to add a new item or H for help.</div>' +
+            '</div>';
+
+        document.getElementById("dialog-current-context").innerHTML = currentContext + 1;
+
+        // add click Events
+        for (let j = 0; j < itemsList[currentContext].length; j++) {
+            var item = document.getElementById("item-id-" + j);
+            item.onclick = leftClickItem;
+            item.oncontextmenu = rightClickItem;
+        }
+        document.getElementById("new-element-btn").onclick = newItemBtn;
+
+    }
 }
 
-function randomColorElement(elem) {
-    var x = parseFloat(Math.random() * 170 + 50);
-	var y = parseFloat(Math.random() * 170 + 50);
-	var z = parseFloat(Math.random() * 170 + 50);
-	var thergb = "rgb(" + x.toFixed(2) + "," + y.toFixed(2) + "," + z.toFixed(2) + ")";
-	elem.style.background=thergb;
+function prevContext() {
+    if (currentContext > 0){
+        currentContext--;
+    }else {
+        currentContext = maxContexts - 1;
+    }
+
+    renderView();
 }
 
-function padToTwoDigits(number) {
-    return (number < 10 ? '0' : '') + number
+function nextContext() {
+    if (currentContext < maxContexts - 1){
+        currentContext++;
+    }else {
+        currentContext = 0;
+    }
+    renderView();
 }
 
-function minutesToTime(totalMinutes) {
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60; 
+// MAIN START
+loadStatus();
 
-    return hours + 'h' + padToTwoDigits(minutes);
-}
-
-readSessionData();
-loadEvents();
-setInterval(updateTimers, 30000); 
+document.getElementById("btn-close").onclick = newItemClose;
+document.getElementById("btn-save").onclick = newItemSave;
+document.onkeydown = keyDownEvent;
