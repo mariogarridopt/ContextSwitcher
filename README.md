@@ -21,10 +21,11 @@ git clone git@github.com:mariogarridopt/ContextSwitcher.git
 cd ContextSwitcher
 ```
 
-Run the script with nodejs:
+Build the app:
 
 ```bash
-npm install && npm run make
+npm install && npm run dist
+open dist
 ```
 
 If you just want to make it run so you can work on the code you can always make it run without building with:
@@ -34,6 +35,3 @@ npm install && npm start
 ```
 
 The files are organized in a way that the mas dir is responsable to make the app run inside Electron and everything that the WebPage needs to run is inside `/app`.
-
-### Design choices
-I was folowing the [Nord Theme](https://www.nordtheme.com/) color scheme, but then things got colorful when I made every card a random color.

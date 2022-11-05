@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, Menu} = require('electron')
-const path = require('path')
+const {app, BrowserWindow, Menu} = require('electron');
+const path = require('path');
+const fs = require('fs');
 
 const isDev = process.env.NODE_ENV == "development";
 
@@ -9,7 +10,8 @@ function createWindow () {
   const mainWindow = new BrowserWindow({
     width: isDev ? 920 : 1080,
     height: isDev ? 400 : 140,
-    frame: isDev,
+    frame: true,
+    //resizable: isDev,
     //titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegrationInWorker: true,
@@ -24,8 +26,16 @@ function createWindow () {
     mainWindow.webContents.openDevTools()
   }
 
+  var position = getConfig('position', [0,0]);
+  mainWindow.setPosition(position[0], position[1]);
+
   // and load the index.html of the app.
   mainWindow.loadFile('app/index.html');
+
+  mainWindow.on('moved', function(e){
+    saveConfig('position', mainWindow.getPosition())
+});
+
 }
 
 // This method will be called when Electron has finished
@@ -59,3 +69,24 @@ app.on('window-all-closed', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+
+// app data storage
+function saveConfig(name ,obj) {
+  var rootPath = app.getPath('userData');
+  try {
+    fs.writeFileSync(rootPath + '/' + name + '.json', JSON.stringify(obj))
+  } catch (err) {
+    console.error(err)
+  } 
+}
+
+function getConfig(name, defReturn = []) {
+  var rootPath = app.getPath('userData');
+  try {
+    let dataString = fs.readFileSync(rootPath + '/' + name + '.json', 'utf8');
+    return JSON.parse(dataString);
+  } catch (err) {
+    return defReturn;
+  }
+}
