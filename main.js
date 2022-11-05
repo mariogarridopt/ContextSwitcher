@@ -9,7 +9,7 @@ function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: isDev ? 920 : 1080,
-    height: isDev ? 400 : 140,
+    height: isDev ? 400 : 102,
     frame: true,
     //resizable: isDev,
     //titleBarStyle: 'hidden',
@@ -46,6 +46,7 @@ app.whenReady().then(() => {
 
   // implement menu
   const mainMenu = Menu.buildFromTemplate([
+    { role: 'appMenu' },
     { role: 'fileMenu' },
     { role: 'editMenu' },
     { role: 'viewMenu' }
